@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Eventos</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1e88e5, #6ab7ff);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .event-details {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #424242;
+            border-radius: 10px;
+        }
+        .event-details h2 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        .event-details p {
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #00c853;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00a94c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detalles de los Eventos</h1>
+        <div id="eventsContainer"></div>
+        <button onclick="goToMainPage()">Registrar Nuevo Evento</button>
+    </div>
+
+    <script>
+        // Recuperar datos almacenados en localStorage
+        const events = JSON.parse(localStorage.getItem("events")) || [];
+
+        // Filtrar y mostrar datos por número de evento
+        const eventsContainer = document.getElementById("eventsContainer");
+
+        if (events.length === 0) {
+            eventsContainer.innerHTML = "<p>No hay eventos registrados aún.</p>";
+        } else {
+            events.forEach((event) => {
+                const eventDiv = document.createElement("div");
+                eventDiv.classList.add("event-details");
+
+                eventDiv.innerHTML = `
+                    <h2>Evento ${event.number}</h2>
+                    <p><strong>Título:</strong> ${event.name}</p>
+                    <p><strong>Descripción:</strong> ${event.description}</p>
+                    <p><strong>Inicio:</strong> ${event.startDate} ${event.startTime}</p>
+                    <p><strong>Finalización:</strong> ${event.endDate} ${event.endTime}</p>
+                    <p><strong>Correo:</strong> ${event.email}</p>
+                `;
+
+                eventsContainer.appendChild(eventDiv);
+            });
+        }
+
+        // Función para regresar a la página de registro
+        function goToMainPage() {
+            window.location.href = "index.html"; // Ajusta el nombre del archivo si es diferente
+        }
+    </script>
+</body>
+</html>
+
+
+

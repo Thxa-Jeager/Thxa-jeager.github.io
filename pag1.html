@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Eventos</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1e88e5, #6ab7ff);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+        input, textarea {
+            margin-top: 5px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: none;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #00c853;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00a94c;
+        }
+        #qrContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #qrContainer canvas {
+            margin-top: 10px;
+        }
+        #extraFields {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- QR Inicial -->
+        <div id="initialQR">
+            <h1>Escanea este QR para ir al Registro</h1>
+            <canvas id="startQR"></canvas>
+        </div>
+
+        <!-- Registro de Evento -->
+        <div id="registrationForm" style="display: none;">
+            <h1>Registro de Evento</h1>
+            <form id="basicForm">
+                <label for="nip">NIP *</label>
+                <input type="text" id="nip" required placeholder="Ej: 12345">
+
+                <label for="eventNumber">Número del Evento *</label>
+                <input type="number" id="eventNumber" required placeholder="Ej: 1">
+
+                <label for="name">Nombre Completo *</label>
+                <input type="text" id="name" required placeholder="Ej: Juan Pérez">
+
+                <label for="email">Correo Electrónico *</label>
+                <input type="email" id="email" required placeholder="Ej: correo@example.com">
+
+                <label for="eventName">Nombre del Evento *</label>
+                <input type="text" id="eventName" required placeholder="Ej: Conferencia Tech 2024">
+
+                <label for="startDate">Fecha Inicial *</label>
+                <input type="date" id="startDate" required>
+
+                <label for="startTime">Hora Inicial *</label>
+                <input type="time" id="startTime" required>
+
+                <label for="endDate">Fecha Final *</label>
+                <input type="date" id="endDate" required>
+
+                <label for="endTime">Hora Final *</label>
+                <input type="time" id="endTime" required>
+
+                <label for="description">Descripción *</label>
+                <textarea id="description" rows="4" required placeholder="Ej: Conferencia sobre tecnologías emergentes y su impacto..."></textarea>
+
+                <button type="button" onclick="generateEventQR()">Generar QR del Evento</button>
+            </form>
+
+            <div id="qrContainer">
+                <h3>QR del Evento</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generar el QR inicial
+        const initialURL = "https://tu-sitio-web.com/registro"; // Reemplaza con el enlace real
+        const startQR = document.getElementById("startQR");
+        QRCode.toCanvas(startQR, initialURL, { width: 200 }, (error) => {
+            if (error) console.error(error);
+        });
+
+        // Mostrar el formulario de registro
+        startQR.addEventListener("click", () => {
+            document.getElementById("initialQR").style.display = "none";
+            document.getElementById("registrationForm").style.display = "block";
+        });
+
+        // Generar QR del Evento
+        function generateEventQR() {
+            const nip = document.getElementById("nip").value;
+            const eventNumber = document.getElementById("eventNumber").value;
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const eventName = document.getElementById("eventName").value;
+            const startDate = document.getElementById("startDate").value;
+            const startTime = document.getElementById("startTime").value;
+            const endDate = document.getElementById("endDate").value;
+            const endTime = document.getElementById("endTime").value;
+            const description = document.getElementById("description").value;
+
+            if (!nip || !eventNumber || !name || !email || !eventName || !startDate || !startTime || !endDate || !endTime || !description) {
+                alert("Por favor, llena todos los campos obligatorios.");
+                return;
+            }
+
+            const mailto = `mailto:${email}?subject=Detalles del Evento: ${eventName}&body=Detalles del Evento:%0A%0ATítulo: ${eventName}%0ANúmero de Evento: ${eventNumber}%0AFecha y Hora de Inicio: ${startDate} ${startTime}%0AFecha y Hora de Finalización: ${endDate} ${endTime}%0ADescripción: ${description}`;
+            
+            const qrContainer = document.getElementById("qrContainer");
+            qrContainer.innerHTML = "<h3>QR del Evento</h3>"; // Reinicia el contenedor
+            const qrCanvas = document.createElement("canvas");
+
+            QRCode.toCanvas(qrCanvas, mailto, { width: 200 }, (error) => {
+                if (error) {
+                    console.error(error);
+                    alert("Hubo un error generando el QR.");
+                }
+            });
+
+            qrContainer.appendChild(qrCanvas);
+        }
+    </script>
+</body>
+</html>
+
+
